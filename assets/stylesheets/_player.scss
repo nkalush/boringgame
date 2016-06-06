@@ -1,0 +1,11 @@
+rpg-actor {
+	display:block;
+	position:absolute;
+	top:50%;
+	left:50%;
+	width:1em;
+	height:2em;
+	background:red;
+	transform: translate(-.5em, -1.5em);
+	z-index:1000;
+}

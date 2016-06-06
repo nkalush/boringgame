@@ -1,0 +1,27 @@
+body {
+	font-size:32px;
+}
+rpg-viewport {
+	display:block;
+	position:fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+}
+
+rpg-map {
+	display:block;
+	position: absolute;
+	transition:all .4s;
+	top:50%;
+	left:50%;
+	transform: translate(-.5em, -.5em);
+	background:#ededed;
+}
+
+rpg-object {
+	display:block;
+	position: absolute;
+	background:blue;
+}
