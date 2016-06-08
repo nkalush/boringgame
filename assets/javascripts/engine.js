@@ -1,3 +1,8 @@
+const objects = {
+	talltestobject: {tileset: 'talltestobject.svg', width: 1, height:4},
+	shorttestobject: {tileset: 'shorttestobject.svg', width: 1, height:2}
+}
+
 const maps = {
 	test: {
 		width:20,
@@ -424,8 +429,11 @@ const maps = {
 			{x: 0, y: 19, tileset: 'testtile.svg'},
 		],
 		objects: [
-			{x: 2, y: 1, width: 1, height: 2},
-			{x: 15, y: 10, width: 3, height: 1}
+			{x: 2, y: 1, object: 'talltestobject'},
+			{x: 2, y: 2, object: 'talltestobject'},
+			{x: 15, y: 10, object: 'shorttestobject'},
+			{x: 15, y: 11, object: 'shorttestobject'},
+			{x: 15, y: 12, object: 'shorttestobject'},
 		]
 	}
 };
@@ -444,16 +452,10 @@ const map = (el) => {
 
 		for (var i = map.floor.length - 1; i >= 0; i--) {
 			tile = document.createElement('rpg-floor-tile');
-			// tile.style.left = (map.floor[i].x - 1) + 'em';
-			// tile.style.top = (map.floor[i].y - 1) + 'em';
 			tile.style.left = (map.floor[i].x + 1) - (map.floor[i].y + 1) + 'em';
 			tile.style.top = ((map.floor[i].x + 1) *.5) + ((map.floor[i].y + 1) * .5) + 'em';
 			tile.dataset.x = map.floor[i].x;
 			tile.dataset.y = map.floor[i].y;
-			// tile.style.top = (map.floor[i].y - 1) + 'em';
-
-			// screen.x = map.x * TILE_WIDTH_HALF - map.y * TILE_WIDTH_HALF;
-			// screen.y = map.x * TILE_HEIGHT_HALF + map.y * TILE_HEIGHT_HALF;
 
 			tile.style.backgroundImage = 'url("img/' + map.floor[i].tileset + '")';
 
@@ -466,10 +468,22 @@ const map = (el) => {
 	const addObjects = function (map) {
 		for (var i = map.objects.length - 1; i >= 0; i--) {
 			var obj = document.createElement('rpg-object');
-			obj.style.left = map.objects[i].x + 'em';
-			obj.style.top = map.objects[i].y + 'em';
-			obj.style.width = map.objects[i].width + 'em';
-			obj.style.height = map.objects[i].height + 'em';
+			// obj.style.left = map.objects[i].x + 'em';
+			// obj.style.top = map.objects[i].y + 'em';
+			// obj.style.width = map.objects[i].width + 'em';
+			// obj.style.height = map.objects[i].height + 'em';
+			obj.dataset.x = map.objects[i].x;
+			obj.dataset.y = map.objects[i].y;
+
+			obj.style.left = (map.objects[i].x + 1) - (map.objects[i].y + 1) + 'em';
+			obj.style.top = ((map.objects[i].x + 1) *.5) + ((map.objects[i].y + 1) * .5) + 'em';
+
+			obj.style.width = (objects[map.objects[i].object].width * 2) + 'em';
+			obj.style.height = objects[map.objects[i].object].height + 'em';
+			obj.style.marginTop = (objects[map.objects[i].object].height * -1) + .5 + 'em';
+			obj.style.zIndex = map.objects[i].x + map.objects[i].y;
+
+			obj.style.backgroundImage = 'url("img/' + objects[map.objects[i].object].tileset + '")';
 
 			el.appendChild(obj);
 		}
@@ -488,20 +502,25 @@ const map = (el) => {
 			addObjects(this.map);
 		},
 		setCenter: function (x, y) {
-			// el.style.marginLeft = (x * -2) + 'em';
-			// el.style.marginTop = (y * -1) + 'em';
-
 			el.style.marginLeft = (x - y) * -1 + 'em';
 			el.style.marginTop = ((x *.5) + (y * .5)) * -1 + 'em';
+
+			document.getElementById('player').style.zIndex = x + y;
+			document.getElementById('playerPos').innerHTML = x + ',' + y;
 		},
+		/*
+			Check if the player can move to a certain space by checking:
+				- There is a tile in that space
+				- There is not an object tile
+		*/
 		collision: function (x, y) {
 			var collides = false,
 				i,
 				xCollision,
 				yCollision;
 			for (i = this.map.objects.length - 1; i >= 0; i--) {
-				xCollision = x >= this.map.objects[i].x && x < (this.map.objects[i].x + this.map.objects[i].width);
-				yCollision = y >= this.map.objects[i].y && y < (this.map.objects[i].y + this.map.objects[i].height);
+				xCollision = x == this.map.objects[i].x;
+				yCollision = y == this.map.objects[i].y;
 
 				if (xCollision && yCollision) {
 					collides = true;
@@ -527,7 +546,6 @@ const npc = {
 const pc = {
 	move: (x, y) => {
 		worldmap.setCenter(x, y);
-		document.getElementById('playerPos').innerHTML = x + ',' + y;
 	}
 };
 
@@ -570,8 +588,8 @@ const actor = (state, move) => ({
 
 let playerState = {
 	el: document.getElementById('player'),
-	x: 1,
-	y: 1,
+	x: 3,
+	y: 3,
 	moving:false
 }
 

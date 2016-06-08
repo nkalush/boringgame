@@ -25,7 +25,7 @@ rpg-map {
 rpg-object {
   display: block;
   position: absolute;
-  background: blue; }
+  background-size: cover; }
 
 rpg-floor {
   display: block;
@@ -47,5 +47,4 @@ rpg-actor {
   height: 2em;
   margin-left: .5em;
   background: red;
-  transform: translate(-0.5em, -1.5em);
-  z-index: 1000; }
+  transform: translate(-0.5em, -1.5em); }
