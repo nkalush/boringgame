@@ -1,6 +1,7 @@
 const objects = {
 	talltestobject: {tileset: 'talltestobject.svg', width: 1, height:4},
-	shorttestobject: {tileset: 'shorttestobject.svg', width: 1, height:2}
+	shorttestobject: {tileset: 'shorttestobject.svg', width: 1, height:2},
+	shorttesttable: {tileset: 'shorttesttable.svg', width: 1, height:2}
 }
 
 const maps = {
@@ -434,6 +435,7 @@ const maps = {
 			{x: 15, y: 10, object: 'shorttestobject'},
 			{x: 15, y: 11, object: 'shorttestobject'},
 			{x: 15, y: 12, object: 'shorttestobject'},
+			{x: 10, y: 5, object: 'shorttesttable'},
 		]
 	}
 };

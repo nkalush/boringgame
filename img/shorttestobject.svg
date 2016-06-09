@@ -4,9 +4,9 @@
       <stop offset="0" stop-color="#9cb0ec"/>
       <stop offset="1" stop-color="#305885"/>
     </linearGradient>
-    <linearGradient id="b" x1="89.286" x2="124.429" y1="983.576" y2="1014.648" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
-    <linearGradient id="c" x1="76.429" x2="79.071" y1="835.005" y2="861.434" gradientUnits="userSpaceOnUse" xlink:href="#a" gradientTransform="translate(-14.57 106.07)"/>
-    <linearGradient id="d" x1="48.929" x2="90.5" y1="1008.934" y2="1067.148" gradientUnits="userSpaceOnUse" xlink:href="#a" gradientTransform="translate(-36 -36.57)"/>
+    <linearGradient id="b" x1="89.286" x2="124.429" y1="983.576" y2="1014.648" xlink:href="#a" gradientUnits="userSpaceOnUse"/>
+    <linearGradient id="c" x1="76.429" x2="79.071" y1="835.005" y2="861.434" gradientTransform="translate(-14.57 106.07)" xlink:href="#a" gradientUnits="userSpaceOnUse"/>
+    <linearGradient id="d" x1="48.929" x2="90.5" y1="1008.934" y2="1067.148" gradientTransform="translate(-36 -36.57)" xlink:href="#a" gradientUnits="userSpaceOnUse"/>
   </defs>
   <g fill-rule="evenodd">
     <path fill="url(#b)" d="M128 956.362v64l-64 32v-64z" transform="translate(0 -924.362)"/>
