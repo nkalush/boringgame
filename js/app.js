@@ -491,6 +491,27 @@ const map = (el) => {
 		}
 	};
 
+	const setCenter = function (x, y) {
+		el.style.marginLeft = (x - y) * -1 + 'em';
+		el.style.marginTop = ((x *.5) + (y * .5)) * -1 + 'em';
+
+		// document.getElementById('player').style.zIndex = x + y;
+		document.getElementById('playerPos').innerHTML = x + ',' + y;
+	};
+
+	const initPlayer = function (state) {
+		var player = document.createElement('rpg-actor');
+		player.setAttribute('id', 'player');
+
+		player.style.left = (state.x + 1) - (state.y + 1) + .5 + 'em';
+		player.style.top = ((state.x + 1) *.5) + ((state.y + 1) * .5) - .5 + 'em';
+		player.style.zIndex = state.x + state.y;
+
+		el.appendChild(player);
+
+		setCenter(state.x, state.y);
+	};
+
 	return {
 		map: null,
 		change: function (name) {
@@ -504,11 +525,10 @@ const map = (el) => {
 			addObjects(this.map);
 		},
 		setCenter: function (x, y) {
-			el.style.marginLeft = (x - y) * -1 + 'em';
-			el.style.marginTop = ((x *.5) + (y * .5)) * -1 + 'em';
-
-			document.getElementById('player').style.zIndex = x + y;
-			document.getElementById('playerPos').innerHTML = x + ',' + y;
+			return setCenter(x, y);
+		},
+		initPlayer: function (state) {
+			return initPlayer(state);
 		},
 		/*
 			Check if the player can move to a certain space by checking:
@@ -547,6 +567,11 @@ const npc = {
 
 const pc = {
 	move: (x, y) => {
+		var player = document.getElementById('player');
+		player.style.left = (x + 1) - (y + 1) + .5 + 'em';
+		player.style.top = ((x + 1) *.5) + ((y + 1) * .5) -.5 + 'em';
+		player.style.zIndex = x + y;
+
 		worldmap.setCenter(x, y);
 	}
 };
@@ -640,4 +665,5 @@ window.addEventListener('keydown', function (e) {
 
 //Set the map as test
 worldmap.change('test');
-worldmap.setCenter(playerState.x, playerState.y);
+worldmap.initPlayer(playerState);
+// worldmap.setCenter(playerState.x, playerState.y);
