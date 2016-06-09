@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="256" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="a">
+      <stop offset="0" stop-color="#618fc4"/>
+      <stop offset="1" stop-color="#2b5586"/>
+    </linearGradient>
+    <linearGradient id="b" x2="15.976" y1="828.362" y2="1028.362" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
+    <linearGradient id="c" x1="15.976" x2="63.903" y1="836.362" y2="1004.362" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
+    <linearGradient id="d" x1="63.903" x2="111.829" y1="812.362" y2="1028.362" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
+    <linearGradient id="e" x1="111.829" x2="127.805" y1="836.362" y2="1020.362" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
+    <linearGradient id="f" x2="111.829" y1="796.362" y2="836.362" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
+  </defs>
+  <g fill-rule="evenodd">
+    <path fill="url(#b)" d="M0 1020.362l15.976 8v-192l-15.976-8z" transform="translate(0 -796.362)"/>
+    <path fill="url(#c)" d="M15.976 1028.362l47.927-24v-192l-47.927 24z" transform="translate(0 -796.362)"/>
+    <path fill="url(#d)" d="M63.903 1004.362l47.926 24v-192l-47.928-24z" transform="translate(0 -796.362)"/>
+    <path fill="url(#e)" d="M111.83 1028.362l15.975-8v-192l-15.976 8z" transform="translate(0 -796.362)"/>
+    <path fill="url(#f)" d="M0 828.362l15.976 8 47.927-24 47.926 24 15.974-8-63.902-32z" transform="translate(0 -796.362)"/>
+  </g>
+</svg>

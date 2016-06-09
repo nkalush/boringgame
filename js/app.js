@@ -1,7 +1,16 @@
 const objects = {
-	talltestobject: {tileset: 'talltestobject.svg', width: 1, height:4},
-	shorttestobject: {tileset: 'shorttestobject.svg', width: 1, height:2},
-	shorttesttable: {tileset: 'shorttesttable.svg', width: 1, height:2}
+	talltestobject: {tileset: 'talltestobject.svg', width: 1, height:4, blocking: true, zIndex: 0},
+	shorttestobject: {tileset: 'shorttestobject.svg', width: 1, height:2, blocking: true, zIndex: 0},
+	shorttesttable: {tileset: 'shorttesttable.svg', width: 1, height:2, blocking: true, zIndex: 0},
+
+	northwalltest: {tileset: 'northwalltest.svg', width: 1, height:4, blocking: ['up'], zIndex: 0},
+	northeastwalltest: {tileset: 'northeastwalltest.svg', width: 1, height:4, blocking: ['up', 'right'], zIndex: 1},
+	eastwalltest: {tileset: 'eastwalltest.svg', width: 1, height:4, blocking: ['right'], zIndex: 1},
+	southeastwalltest: {tileset: 'southeastwalltest.svg', width: 1, height:4, blocking: ['down', 'right'], zIndex: 1},
+	southwalltest: {tileset: 'southwalltest.svg', width: 1, height:4, blocking: ['down'], zIndex: 1},
+	southwestwalltest: {tileset: 'southwestwalltest.svg', width: 1, height:4, blocking: ['down', 'left'], zIndex: 1},
+	westwalltest: {tileset: 'westwalltest.svg', width: 1, height:4, blocking: ['left'], zIndex: 0},
+	northwestwalltest: {tileset: 'northwestwalltest.svg', width: 1, height:4, blocking: ['up', 'left'], zIndex: 0},
 }
 
 const maps = {
@@ -436,6 +445,19 @@ const maps = {
 			{x: 15, y: 11, object: 'shorttestobject'},
 			{x: 15, y: 12, object: 'shorttestobject'},
 			{x: 10, y: 5, object: 'shorttesttable'},
+
+			{x: 1, y: 11, object: 'northwestwalltest'},
+			{x: 1, y: 12, object: 'westwalltest'},
+			{x: 1, y: 13, object: 'westwalltest'},
+			{x: 1, y: 14, object: 'southwestwalltest'},
+			{x: 2, y: 14, object: 'southwalltest'},
+			{x: 3, y: 14, object: 'southwalltest'},
+			{x: 4, y: 14, object: 'southeastwalltest'},
+			{x: 4, y: 13, object: 'eastwalltest'},
+			// {x: 4, y: 12, object: 'eastwalltest'},
+			{x: 4, y: 11, object: 'northeastwalltest'},
+			{x: 3, y: 11, object: 'northwalltest'},
+			{x: 2, y: 11, object: 'northwalltest'},
 		]
 	}
 };
@@ -483,7 +505,7 @@ const map = (el) => {
 			obj.style.width = (objects[map.objects[i].object].width * 2) + 'em';
 			obj.style.height = objects[map.objects[i].object].height + 'em';
 			obj.style.marginTop = (objects[map.objects[i].object].height * -1) + .5 + 'em';
-			obj.style.zIndex = map.objects[i].x + map.objects[i].y;
+			obj.style.zIndex = map.objects[i].x + map.objects[i].y + objects[map.objects[i].object].zIndex;
 
 			obj.style.backgroundImage = 'url("img/' + objects[map.objects[i].object].tileset + '")';
 
@@ -532,20 +554,38 @@ const map = (el) => {
 		},
 		/*
 			Check if the player can move to a certain space by checking:
-				- There is a tile in that space
+				- There is a tile in that space and blocking is true
 				- There is not an object tile
 		*/
-		collision: function (x, y) {
+		collision: function (srcx, srcy, destx, desty, direction) {
 			var collides = false,
 				i,
 				xCollision,
-				yCollision;
-			for (i = this.map.objects.length - 1; i >= 0; i--) {
-				xCollision = x == this.map.objects[i].x;
-				yCollision = y == this.map.objects[i].y;
+				yCollision,
+				blocking,
+				direction,
+				oppDir = {
+					up: 'down',
+					down: 'up',
+					left: 'right',
+					right: 'left',
+				};
 
-				if (xCollision && yCollision) {
-					collides = true;
+			for (i = this.map.objects.length - 1; i >= 0; i--) {
+				xObj = srcx == this.map.objects[i].x;
+				yObj = srcy == this.map.objects[i].y;
+				xCollision = destx == this.map.objects[i].x;
+				yCollision = desty == this.map.objects[i].y;
+				blocking = objects[this.map.objects[i].object].blocking;
+
+				if (xCollision && yCollision) { // There's an object in the dest tile
+					if (blocking === true || blocking.indexOf(oppDir[direction]) !== -1) {
+						collides = true;
+					}
+				} else if (xObj && yObj) { // There's an object in the src tile
+					if (blocking.indexOf(direction) !== -1) {
+						collides = true;
+					}
 				}
 			}
 			return collides;
@@ -600,7 +640,7 @@ const actor = (state, move) => ({
 					y = y < worldmap.map.height - 1 ? y + 1 : worldmap.map.height - 1;
 					break;
 			}
-			if (!worldmap.collision(x, y)) {
+			if (!worldmap.collision(state.x, state.y, x, y, direction)) {
 				state.moving = true;
 				state.x = x;
 				state.y = y;
