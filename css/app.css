@@ -25,7 +25,10 @@ rpg-map {
 rpg-object {
   display: block;
   position: absolute;
-  background-size: cover; }
+  background-size: cover;
+  transition: opacity 1s; }
+  rpg-object.opaque {
+    opacity: .2; }
 
 rpg-floor {
   display: block;

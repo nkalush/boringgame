@@ -28,6 +28,10 @@ rpg-object {
 	display:block;
 	position: absolute;
 	background-size:cover;
+	transition: opacity 1s;
+	&.opaque {
+		opacity:.2;
+	}
 }
 
 rpg-floor {

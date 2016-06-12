@@ -1,16 +1,16 @@
 const objects = {
-	talltestobject: {tileset: 'talltestobject.svg', width: 1, height:4, blocking: true, zIndex: 0},
-	shorttestobject: {tileset: 'shorttestobject.svg', width: 1, height:2, blocking: true, zIndex: 0},
-	shorttesttable: {tileset: 'shorttesttable.svg', width: 1, height:2, blocking: true, zIndex: 0},
+	talltestobject: {tileset: 'talltestobject.svg', width: 1, height:4, blocking: true, zIndex: 1, hidesplayer: 1},
+	shorttestobject: {tileset: 'shorttestobject.svg', width: 1, height:2, blocking: true, zIndex: 0, hidesplayer: 0},
+	shorttesttable: {tileset: 'shorttesttable.svg', width: 1, height:2, blocking: true, zIndex: 0, hidesplayer: 0},
 
-	northwalltest: {tileset: 'northwalltest.svg', width: 1, height:4, blocking: ['up'], zIndex: 0},
-	northeastwalltest: {tileset: 'northeastwalltest.svg', width: 1, height:4, blocking: ['up', 'right'], zIndex: 1},
-	eastwalltest: {tileset: 'eastwalltest.svg', width: 1, height:4, blocking: ['right'], zIndex: 1},
-	southeastwalltest: {tileset: 'southeastwalltest.svg', width: 1, height:4, blocking: ['down', 'right'], zIndex: 1},
-	southwalltest: {tileset: 'southwalltest.svg', width: 1, height:4, blocking: ['down'], zIndex: 1},
-	southwestwalltest: {tileset: 'southwestwalltest.svg', width: 1, height:4, blocking: ['down', 'left'], zIndex: 1},
-	westwalltest: {tileset: 'westwalltest.svg', width: 1, height:4, blocking: ['left'], zIndex: 0},
-	northwestwalltest: {tileset: 'northwestwalltest.svg', width: 1, height:4, blocking: ['up', 'left'], zIndex: 0},
+	northwalltest: {tileset: 'northwalltest.svg', width: 1, height:4, blocking: ['up'], zIndex: 0, hidesplayer: 1},
+	northeastwalltest: {tileset: 'northeastwalltest.svg', width: 1, height:4, blocking: ['up', 'right'], zIndex: 1, hidesplayer: 1},
+	eastwalltest: {tileset: 'eastwalltest.svg', width: 1, height:4, blocking: ['right'], zIndex: 1, hidesplayer: 1},
+	southeastwalltest: {tileset: 'southeastwalltest.svg', width: 1, height:4, blocking: ['down', 'right'], zIndex: 1, hidesplayer: 1},
+	southwalltest: {tileset: 'southwalltest.svg', width: 1, height:4, blocking: ['down'], zIndex: 1, hidesplayer: 1},
+	southwestwalltest: {tileset: 'southwestwalltest.svg', width: 1, height:4, blocking: ['down', 'left'], zIndex: 1, hidesplayer: 1},
+	westwalltest: {tileset: 'westwalltest.svg', width: 1, height:4, blocking: ['left'], zIndex: 0, hidesplayer: 1},
+	northwestwalltest: {tileset: 'northwestwalltest.svg', width: 1, height:4, blocking: ['up', 'left'], zIndex: 0, hidesplayer: 1},
 }
 
 const maps = {
@@ -454,10 +454,15 @@ const maps = {
 			{x: 3, y: 14, object: 'southwalltest'},
 			{x: 4, y: 14, object: 'southeastwalltest'},
 			{x: 4, y: 13, object: 'eastwalltest'},
-			// {x: 4, y: 12, object: 'eastwalltest'},
 			{x: 4, y: 11, object: 'northeastwalltest'},
 			{x: 3, y: 11, object: 'northwalltest'},
 			{x: 2, y: 11, object: 'northwalltest'},
+			{x: 10, y: 10, object: 'talltestobject'},
+			{x: 11, y: 10, object: 'talltestobject'},
+			{x: 10, y: 11, object: 'talltestobject'},
+			{x: 11, y: 11, object: 'talltestobject'},
+			{x: 10, y: 12, object: 'talltestobject'},
+			{x: 12, y: 10, object: 'talltestobject'},
 		]
 	}
 };
@@ -498,6 +503,9 @@ const map = (el) => {
 			// obj.style.height = map.objects[i].height + 'em';
 			obj.dataset.x = map.objects[i].x;
 			obj.dataset.y = map.objects[i].y;
+			obj.dataset.hidesplayer = objects[map.objects[i].object].hidesplayer;
+			obj.dataset.zIndex = objects[map.objects[i].object].zIndex;
+			obj.dataset.height = objects[map.objects[i].object].height;
 
 			obj.style.left = (map.objects[i].x + 1) - (map.objects[i].y + 1) + 'em';
 			obj.style.top = ((map.objects[i].x + 1) *.5) + ((map.objects[i].y + 1) * .5) + 'em';
@@ -512,11 +520,53 @@ const map = (el) => {
 			el.appendChild(obj);
 		}
 	};
+	const distanceBetween = function (x1, y1, x2, y2) {
+		return Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y2 - y1), 2));
+	}
+	const angleFromPointToPoint = function (x1, y1, x2, y2) {
+		return Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+	}
+	const hideObjects = function (x, y) {
+		let objects = document.querySelectorAll('rpg-object'),
+			i,
+			hidesplayer,
+			below,
+			closeEnough,
+			sameSpot,
+			distance,
+			angle;
+
+		for (i = objects.length - 1; i >= 0; i--) {
+			distance = distanceBetween(x, y, objects[i].dataset.x, objects[i].dataset.y);
+			angle = angleFromPointToPoint(x, y, objects[i].dataset.x, objects[i].dataset.y);
+
+			// If an object is flagged as hiding the player in the object DB
+			hidesplayer = parseInt(objects[i].dataset.hidesplayer, 10) === 1;
+
+			// If the x or y is greater than the players, the object is below them
+			below = (distance < 1.5 && angle >= 0 && angle <= 90) || (distance >= 1.5 && angle >= 25 && angle <= 65);
+
+			// The height of an object directly relates to distance from player
+			closeEnough = distance <= (objects[i].dataset.height);
+
+			// if the object is supposed to be behind the player while on the
+			// same spot (like a wall) then it should not dissapear when in line
+			// with the player (like if you're in a NW corner, the walls to the
+			// west and south wont dissapear)
+			wallfix =  parseInt(objects[i].dataset.zIndex, 10) === 0 && (parseInt(objects[i].dataset.x, 10) === x || parseInt(objects[i].dataset.y, 10) === y);
+
+			if (hidesplayer && closeEnough && below && !wallfix) {
+				objects[i].classList.add('opaque');
+			} else {
+				objects[i].classList.remove('opaque');
+			}
+		}
+	};
 
 	const setCenter = function (x, y) {
 		el.style.marginLeft = (x - y) * -1 + 'em';
 		el.style.marginTop = ((x *.5) + (y * .5)) * -1 + 'em';
-
+		hideObjects(x, y);
 		// document.getElementById('player').style.zIndex = x + y;
 		document.getElementById('playerPos').innerHTML = x + ',' + y;
 	};
